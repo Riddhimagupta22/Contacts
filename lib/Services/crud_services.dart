@@ -4,9 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CrudService {
   final user = FirebaseAuth.instance.currentUser;
 
-  Future addNewContacts(String image, String name, String phone_number) async {
+
+  Future addNewContacts(
+      // String image,
+      String name,
+      String phone_number)
+  async {
     Map<String, dynamic> data = {
-      "image": image,
+      // "image": image,
       "name": name,
       "phone_number": phone_number
     };
@@ -22,25 +27,24 @@ class CrudService {
     }
   }
 
-  Future updateContacts(
-      String image, String name, String phone_number, String docID) async {
-    Map<String, dynamic> data = {
-      "image": image,
-      "name": name,
-      "phone_number": phone_number
-    };
+  // Stream<QuerySnapshot> getContacts()async* {
+  //   var contacts = FirebaseFirestore.instance.collection('users')
+  //     ..doc(user!.uid).collection("contacts").snapshots();
+  //   yield* contacts;
+  // }
+ Stream<QuerySnapshot> getContacts() async* {
     try {
-      await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection("users")
           .doc(user!.uid)
           .collection("contacts")
-          .doc(docID)
-          .update(data);
-      print("Details Updated");
+          .snapshots();
     } catch (e) {
-      print(e.toString());
+      print("Error fetching contacts: $e");
     }
+
   }
+
 
   Future deleteContacts(String docID) async {
     try {

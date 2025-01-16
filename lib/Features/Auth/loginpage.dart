@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/Features/Widgets/round_button.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import '../../Services/auth_services.dart';
 import '../Screens/Post_screen.dart';
 import 'signup.dart';
@@ -220,7 +218,7 @@ class _LoginpageState extends State<Loginpage> {
                           height: size.height * .03,
                         ),
                         ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async{
                               AuthService().signUpwithGoogle().then((user) {
                                 if (user != null) {
                                   Get.snackbar(
