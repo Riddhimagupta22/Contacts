@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/Features/Screens/update_contacts.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/Features/Screens/add_contacts.dart';
-import 'package:firebase_database/Services/crud_services.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({super.key});
@@ -11,6 +11,20 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
+  final contactsdata =
+      FirebaseFirestore.instance.collection("Users").snapshots();
+  void deleteData(String id)async{
+    try {
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc("userID")
+          .collection("contacts").doc(id)
+          .delete();
+      print("Details Deleted");
+    } catch (e) {
+      print(e.toString());
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,31 +44,39 @@ class _PostScreenState extends State<PostScreen> {
         child: const Icon(Icons.person_add_alt_1),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: CrudService().getContacts(),
+        stream: contactsdata,
         builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+            if (docs.isEmpty) {
+              return const Center(
+                  child: Text(
+                "No contacts found.",
+              ));
+            }else {
+            return ListView.builder(
+                itemCount: docs.length,
+                itemBuilder: (context,index){
+                  final User = docs[index].data() as Map<String,dynamic>;
+                  final UserID = docs[index].id;
+                  final String name = User['name'];
+                  final phonenumber = User['phonenumber'];
+                  return ListTile(
+                    title: Text(name),
+                    subtitle: Text("$phonenumber"),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.black),
+                      onPressed: () => deleteData,
+                    ),
+                  );
+            });}
+          }
           if (snapshot.hasError) {
             return const Center(
               child: Text("Something went wrong. Please try again."),
             );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("No contacts found."));
-          } else {
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                document.data() as Map<String, dynamic>;
-                return ListTile(
-                  leading: const CircleAvatar(
-                    child: Icon(Icons.person),
-                  ),
-                  title: Text(data['Name'] ?? 'No Name'),
-                  subtitle: Text(data['Contact Number'] ?? 'No Contact Number'),
-                );
-              }).toList(),
-            );
           }
+          return const Center(child: CircularProgressIndicator());
         },
       ),
     );
