@@ -69,7 +69,14 @@ class _AddContactsState extends State<AddContacts> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 50),
-                      child: TextField(
+                      child: TextFormField(
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Enter a vaild phone number';
+                          }
+                          return null;
+                        },
+                        keyboardType: TextInputType.number,
                         controller: PhonenoController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(

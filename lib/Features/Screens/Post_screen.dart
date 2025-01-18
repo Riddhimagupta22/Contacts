@@ -12,12 +12,12 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   final contactsdata =
-      FirebaseFirestore.instance.collection("Users").snapshots();
+      FirebaseFirestore.instance.collection("contacts").snapshots();
   void deleteData(String id)async{
     try {
       await FirebaseFirestore.instance
           .collection("Users")
-          .doc("userID")
+          .doc(id)
           .collection("contacts").doc(id)
           .delete();
       print("Details Deleted");
@@ -45,31 +45,32 @@ class _PostScreenState extends State<PostScreen> {
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: contactsdata,
-        builder: (context, snapshot) {
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            final List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-            if (docs.isEmpty) {
-              return const Center(
-                  child: Text(
-                "No contacts found.",
-              ));
-            }else {
-            return ListView.builder(
-                itemCount: docs.length,
+            // if (documents.isEmpty) {
+            //   return const Center(
+            //       child: Text(
+            //     "No contacts found.",
+            //   ));
+            // }else {
+
+              return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context,index){
-                  final User = docs[index].data() as Map<String,dynamic>;
-                  final UserID = docs[index].id;
+                  final User = snapshot.data!.docs[index].data() as Map<String,dynamic>;
+                  // final UserId = documents[index].id;
                   final String name = User['name'];
                   final phonenumber = User['phonenumber'];
                   return ListTile(
                     title: Text(name),
-                    subtitle: Text("$phonenumber"),
+                    subtitle: Text(phonenumber),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete, color: Colors.black),
                       onPressed: () => deleteData,
                     ),
                   );
-            });}
+            });
+          // }
           }
           if (snapshot.hasError) {
             return const Center(
