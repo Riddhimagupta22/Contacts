@@ -11,7 +11,7 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  final contactsdata =
+  final Stream<QuerySnapshot> contactsdata =
       FirebaseFirestore.instance.collection("contacts").snapshots();
   void deleteData(String id)async{
     try {
@@ -47,18 +47,17 @@ class _PostScreenState extends State<PostScreen> {
         stream: contactsdata,
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasData) {
-            // if (documents.isEmpty) {
-            //   return const Center(
-            //       child: Text(
-            //     "No contacts found.",
-            //   ));
-            // }else {
-
+            if (snapshot.data!.docs.isEmpty) {
+              return const Center(
+                  child: Text(
+                "No contacts found.",
+              ));
+            }else {
               return ListView.builder(
                 itemCount: snapshot.data!.docs.length,
                 itemBuilder: (context,index){
                   final User = snapshot.data!.docs[index].data() as Map<String,dynamic>;
-                  // final UserId = documents[index].id;
+                  final UserId = snapshot.data!.docs[index].id;
                   final String name = User['name'];
                   final phonenumber = User['phonenumber'];
                   return ListTile(
@@ -70,7 +69,7 @@ class _PostScreenState extends State<PostScreen> {
                     ),
                   );
             });
-          // }
+          }
           }
           if (snapshot.hasError) {
             return const Center(
