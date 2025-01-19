@@ -12,13 +12,12 @@ class PostScreen extends StatefulWidget {
 
 class _PostScreenState extends State<PostScreen> {
   final Stream<QuerySnapshot> contactsdata =
-      FirebaseFirestore.instance.collection("contacts").snapshots();
-  void deleteData(String id)async{
+      (FirebaseFirestore.instance.collection("Users")..get()) as Stream<QuerySnapshot<Object?>>;
+  void deleteData()async{
     try {
       await FirebaseFirestore.instance
           .collection("Users")
-          .doc(id)
-          .collection("contacts").doc(id)
+          .doc('userID')
           .delete();
       print("Details Deleted");
     } catch (e) {

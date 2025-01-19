@@ -22,9 +22,8 @@ class _UpdateContactsState extends State<UpdateContacts> {
         await FirebaseFirestore.instance
             .collection("Users")
             .doc('userID')
-            .collection("contacts")
-            .add({"name": nameController.text,"phoneno": PhonenoController.text});
-        print("Details Added");
+            .update({"name": nameController.text,"phoneno": PhonenoController.text});
+        print("Details Updated");
         Navigator.pop(context);
       } catch (e) {
         print(e.toString());
