@@ -15,7 +15,7 @@ class _PostScreenState extends State<PostScreen> {
   Future<void> deleteContact(String userId) async {
     try {
       await FirebaseFirestore.instance.collection("Users").doc(userId).delete();
-     print('Contact deleted successfully');
+      print('Contact deleted successfully');
     } catch (e) {
       print('Failed to delete contact: ${e.toString()}');
     }
@@ -60,16 +60,21 @@ class _PostScreenState extends State<PostScreen> {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              Map<String, dynamic> userMap = snapshot.data!.docs[index].data() as Map<String, dynamic>;
+              Map<String, dynamic> userMap =
+                  snapshot.data!.docs[index].data() as Map<String, dynamic>;
 
               return ListTile(
-                onTap: (){ Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const UpdateContacts()),
-                );}
-                ,
-                title: Text(userMap["name"] ),
-                subtitle: Text(userMap["phoneno"] ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => UpdateContact(docId: snapshot.data!.docs[index].id,
+                          initialName: userMap["name"],
+                          initialPhone: userMap["phoneno"],)),
+                  );
+                },
+                title: Text(userMap["name"]),
+                subtitle: Text(userMap["phoneno"]),
                 trailing: IconButton(
                   icon: const Icon(Icons.delete, color: Colors.black),
                   onPressed: () => deleteContact(snapshot.data!.docs[index].id),

@@ -1,95 +1,110 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class UpdateContacts extends StatefulWidget {
-  const UpdateContacts({super.key});
+class UpdateContact extends StatefulWidget {
+  final String docId; // Document ID of the contact to be updated
+  final String initialName;
+  final String initialPhone;
 
+  const UpdateContact({
+    super.key,
+    required this.docId,
+    required this.initialName,
+    required this.initialPhone,
+  });
 
   @override
-  State<UpdateContacts> createState() => _UpdateContactsState();
+  State<UpdateContact> createState() => _UpdateContactState();
 }
 
-class _UpdateContactsState extends State<UpdateContacts> {
-  final nameController = TextEditingController();
-  final PhonenoController = TextEditingController();
-  final formfield = GlobalKey<FormState>();
+class _UpdateContactState extends State<UpdateContact> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController nameController;
+  late TextEditingController phonenoController;
 
-  void updatecontacts()async{
-    if(formfield.currentState!.validate()){
+  @override
+  void initState() {
+    super.initState();
+    nameController = TextEditingController(text: widget.initialName);
+    phonenoController = TextEditingController(text: widget.initialPhone);
+  }
+
+  Future<void> updateContact() async {
+    if (_formKey.currentState!.validate()) {
       try {
         await FirebaseFirestore.instance
             .collection("Users")
-            .doc('userID')
-            .update({"name": nameController.text,"phoneno": PhonenoController.text});
-        print("Details Updated");
+            .doc(widget.docId)
+            .update({
+          "name": nameController.text,
+          "phoneno": phonenoController.text,
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Contact updated successfully')),
+        );
       } catch (e) {
-        print(e.toString());
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error updating contact: $e')),
+        );
       }
-    }else{
-      Get.snackbar('Error', 'Kindly fill the required details');
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text('Update contacts'),),
-      body: SingleChildScrollView(
+      appBar: AppBar(
+        title: const Text("Update Contact"),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: formfield,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 50),
-                  child: TextFormField(
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter Name';
-                      }
-                      return null;
-                    },
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(15)),
-                      // fillColor: Color(0xffceb9f9),
-                      filled: true,
-                      hintText: "Name",
-                    ),
-                  ),
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: "Name",
+                  border: OutlineInputBorder(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 50),
-                  child: TextField(
-                    controller: PhonenoController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(15)),
-                      // fillColor: Color(0xffceb9f9),
-                      filled: true,
-                      hintText: "Phone Number",
-                    ),
-                  ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter a name";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: phonenoController,
+                decoration: const InputDecoration(
+                  labelText: "Phone Number",
+                  border: OutlineInputBorder(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 50),
-                  child: ElevatedButton(onPressed: (){
-                    updatecontacts;
-                    Navigator.pop(context);
-                  }, child: Text('Save Changes')),
-                )
-              ],
-            ),
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter a phone number";
+                  }
+                  if (value.length < 10) {
+                    return "Enter a valid phone number";
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  updateContact;
+                  Navigator.pop(context);
+                },
+                child: const Text("Update Contact"),
+              ),
+            ],
           ),
         ),
-      ) ,
+      ),
     );
   }
 }
-

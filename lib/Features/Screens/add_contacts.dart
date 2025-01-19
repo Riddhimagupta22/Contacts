@@ -21,7 +21,6 @@ class _AddContactsState extends State<AddContacts> {
             .collection("Users")
             .add({"name": name, "phoneno": phoneno});
         Get.snackbar('Success', 'Contact added successfully');
-
       } catch (e) {
         Get.snackbar('Error', 'Failed to add contact: ${e.toString()}');
       }
@@ -42,7 +41,8 @@ class _AddContactsState extends State<AddContacts> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -62,7 +62,8 @@ class _AddContactsState extends State<AddContacts> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 50),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 5, horizontal: 50),
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -83,7 +84,8 @@ class _AddContactsState extends State<AddContacts> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.pop(context);

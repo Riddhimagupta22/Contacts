@@ -218,7 +218,7 @@ class _LoginpageState extends State<Loginpage> {
                           height: size.height * .03,
                         ),
                         ElevatedButton(
-                            onPressed: () async{
+                            onPressed: () async {
                               AuthService().signUpwithGoogle().then((user) {
                                 if (user != null) {
                                   Get.snackbar(
