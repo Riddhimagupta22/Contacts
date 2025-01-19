@@ -233,7 +233,7 @@ class _LoginpageState extends State<Loginpage> {
                                 }
                               });
                             },
-                            child: Text("Sign Up with Gmail"))
+                            child: Text("Sign Up with Google"))
                       ],
                     ),
                   ),

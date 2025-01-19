@@ -276,7 +276,7 @@ class _SignupState extends State<Signup> {
                                       }
                                     });
                                   },
-                                  child: Text("Sign Up with Gmail")),
+                                  child: Text("Sign Up with Google")),
                             ],
                           ),
                         ),

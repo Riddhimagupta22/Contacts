@@ -3,6 +3,7 @@ import 'package:firebase_database/Features/Auth/loginpage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
+import 'Features/Screens/Post_screen.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Loginpage(),
+      home: PostScreen(),
     );
   }
 }

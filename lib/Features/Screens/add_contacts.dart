@@ -10,46 +10,42 @@ class AddContacts extends StatefulWidget {
 }
 
 class _AddContactsState extends State<AddContacts> {
-
   TextEditingController nameController = TextEditingController();
-  TextEditingController PhonenoController = TextEditingController();
-  final formfield = GlobalKey<FormState>();
+  TextEditingController phonenoController = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  addNewContacts( String name,  String Phoneno)
-  async {
-    if(formfield.currentState!.validate()){
+  Future<void> addNewContacts(String name, String phoneno) async {
+    if (formKey.currentState!.validate()) {
       try {
         await FirebaseFirestore.instance
             .collection("Users")
-            .doc('userID')
-            .set({"name": name,"phoneno": Phoneno});
-        print("Details Added");
-        Navigator.pop(context);
+            .add({"name": name, "phoneno": phoneno});
+        Get.snackbar('Success', 'Contact added successfully');
+
       } catch (e) {
-        print(e.toString());
+        Get.snackbar('Error', 'Failed to add contact: ${e.toString()}');
       }
-    }else{
-      Get.snackbar('Error', 'Kindly fill the required details');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text('Add to Contacts'),),
+      appBar: AppBar(
+        title: const Text('Add to Contacts'),
+      ),
       body: SingleChildScrollView(
         child: Form(
-          key: formfield,
+          key: formKey,
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 50),
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 50),
                   child: TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty) {
+                      if (value == null || value.isEmpty) {
                         return 'Enter Name';
                       }
                       return null;
@@ -57,46 +53,53 @@ class _AddContactsState extends State<AddContacts> {
                     controller: nameController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(15)),
-                      // fillColor: Color(0xffceb9f9),
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       filled: true,
                       hintText: "Name",
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 50),
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 50),
                   child: TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Enter a vaild phone number';
+                      if (value == null || value.isEmpty) {
+                        return 'Enter a valid phone number';
                       }
                       return null;
                     },
                     keyboardType: TextInputType.number,
-                    controller: PhonenoController,
+                    controller: phonenoController,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(15)),
-                      // fillColor: Color(0xffceb9f9),
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
                       filled: true,
                       hintText: "Phone Number",
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 50),
-                  child: ElevatedButton(onPressed: (){
-                    addNewContacts(nameController.text.toString(),PhonenoController.text.toString());
-                  }, child: Text('Add to Contacts')),
-                )
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      addNewContacts(
+                        nameController.text.trim(),
+                        phonenoController.text.trim(),
+                      );
+                    },
+                    child: const Text('Add to Contacts'),
+                  ),
+                ),
               ],
             ),
           ),
         ),
-      ) ,
+      ),
     );
   }
 }

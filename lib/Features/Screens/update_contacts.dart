@@ -24,7 +24,6 @@ class _UpdateContactsState extends State<UpdateContacts> {
             .doc('userID')
             .update({"name": nameController.text,"phoneno": PhonenoController.text});
         print("Details Updated");
-        Navigator.pop(context);
       } catch (e) {
         print(e.toString());
       }
@@ -36,7 +35,7 @@ class _UpdateContactsState extends State<UpdateContacts> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: Text('Add to Contacts'),),
+      appBar: AppBar(title: Text('Update contacts'),),
       body: SingleChildScrollView(
         child: Form(
           key: formfield,
@@ -82,9 +81,8 @@ class _UpdateContactsState extends State<UpdateContacts> {
                   padding: const EdgeInsets.symmetric(vertical: 5,horizontal: 50),
                   child: ElevatedButton(onPressed: (){
                     updatecontacts;
-                  },
-                      style: ElevatedButton.styleFrom(
-                      ),child: Text('Add to Contacts')),
+                    Navigator.pop(context);
+                  }, child: Text('Save Changes')),
                 )
               ],
             ),
