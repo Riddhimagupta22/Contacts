@@ -24,6 +24,8 @@ class _AddContactsState extends State<AddContacts> {
       } catch (e) {
         Get.snackbar('Error', 'Failed to add contact: ${e.toString()}');
       }
+      nameController.clear();
+      phonenoController.clear();
     }
   }
 

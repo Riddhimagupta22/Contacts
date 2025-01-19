@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UpdateContact extends StatefulWidget {
-  final String docId; // Document ID of the contact to be updated
+  final String docId;
   final String initialName;
   final String initialPhone;
 
@@ -39,6 +39,7 @@ class _UpdateContactState extends State<UpdateContact> {
           "name": nameController.text,
           "phoneno": phonenoController.text,
         });
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Contact updated successfully')),
         );
@@ -82,7 +83,7 @@ class _UpdateContactState extends State<UpdateContact> {
                   labelText: "Phone Number",
                   border: OutlineInputBorder(),
                 ),
-                keyboardType: TextInputType.phone,
+                keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return "Please enter a phone number";
@@ -95,9 +96,9 @@ class _UpdateContactState extends State<UpdateContact> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
-                  updateContact;
-                  Navigator.pop(context);
+                onPressed: () async {
+                  await updateContact();
+
                 },
                 child: const Text("Update Contact"),
               ),
